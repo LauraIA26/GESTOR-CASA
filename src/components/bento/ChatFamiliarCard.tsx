@@ -4,9 +4,9 @@ import { MessageSquare, Send, Bell, ShoppingCart, Wrench, FileText, User } from 
 import { motion } from 'motion/react';
 
 export const ChatFamiliarCard: React.FC = () => {
-  const { chatMessages, addChatMessage } = useFinance();
+  const { chatMessages, addChatMessage, familyMembers } = useFinance();
 
-  const [sender, setSender] = useState('Carlos (Papá)');
+  const [sender, setSender] = useState(familyMembers[0] ? `${familyMembers[0].name} (${familyMembers[0].role})` : 'Carlos (Papá)');
   const [textInput, setTextInput] = useState('');
   const [category, setCategory] = useState<'Aviso' | 'Compra' | 'Arreglo' | 'Nota'>('Aviso');
 
@@ -72,9 +72,11 @@ export const ChatFamiliarCard: React.FC = () => {
               onChange={(e) => setSender(e.target.value)}
               className="bg-transparent text-xs font-bold text-slate-800 dark:text-slate-200 focus:outline-none cursor-pointer"
             >
-              <option value="Carlos (Papá)">Carlos (Papá)</option>
-              <option value="Elena (Mamá)">Elena (Mamá)</option>
-              <option value="Lucas (Hijo)">Lucas (Hijo)</option>
+              {familyMembers.map((m) => (
+                <option key={m.id} value={`${m.name} (${m.role})`}>
+                  {m.name} ({m.role})
+                </option>
+              ))}
             </select>
           </div>
 

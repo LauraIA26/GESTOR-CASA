@@ -7,7 +7,8 @@ import {
   MonthlyTrendData,
   SavingsTarget,
   OptimizationTip,
-  ChatMessage
+  ChatMessage,
+  FamilyMember
 } from '../types/finance';
 
 export const INITIAL_MONTHLY_SUMMARY = {
@@ -17,6 +18,19 @@ export const INITIAL_MONTHLY_SUMMARY = {
   targetSavings: 500,
   currentSavingsJar: 8450,
 };
+
+export const INITIAL_FAMILY_PROFILES = [
+  'Familia García',
+  'Piso Compartido Madrid',
+  'Casa de Campo',
+];
+
+export const INITIAL_FAMILY_MEMBERS: FamilyMember[] = [
+  { id: 'mem1', name: 'Elena', role: 'Mamá' },
+  { id: 'mem2', name: 'Carlos', role: 'Papá' },
+  { id: 'mem3', name: 'Lucas', role: 'Hijo/a' },
+  { id: 'mem4', name: 'Sofía', role: 'Hijo/a' },
+];
 
 export const INITIAL_SAVINGS_TARGET: SavingsTarget = {
   goalName: 'Fondo Emergencia & Vacaciones',
@@ -166,7 +180,7 @@ export const INITIAL_VARIABLE_EXPENSES: VariableExpense[] = [
 export const INITIAL_MEDICAL_APPOINTMENTS: MedicalAppointment[] = [
   {
     id: 'm1',
-    patientName: 'Lucas (Hijo)',
+    patientName: 'Lucas (Hijo/a)',
     specialty: 'Pediatría - Vacunación',
     tag: 'pediatria',
     doctorName: 'Dra. Martínez',

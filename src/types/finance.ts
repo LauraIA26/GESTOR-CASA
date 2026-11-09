@@ -2,6 +2,13 @@ export type CategoryType = 'fijos' | 'suministros' | 'variables' | 'ahorro' | 's
 
 export type PeriodicityType = 'mensual' | 'bimensual' | 'trimestral' | 'anual';
 
+export interface FamilyMember {
+  id: string;
+  name: string;
+  role: 'Mamá' | 'Papá' | 'Hijo/a' | 'Abuelo/a' | 'Mascota' | 'Inquilino/a' | 'Otro';
+  notes?: string;
+}
+
 export interface FixedExpense {
   id: string;
   name: string;

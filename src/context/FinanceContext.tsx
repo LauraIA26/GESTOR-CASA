@@ -8,10 +8,13 @@ import {
   MonthlyTrendData,
   SavingsTarget,
   OptimizationTip,
-  ChatMessage
+  ChatMessage,
+  FamilyMember
 } from '../types/finance';
 import {
   INITIAL_MONTHLY_SUMMARY,
+  INITIAL_FAMILY_PROFILES,
+  INITIAL_FAMILY_MEMBERS,
   INITIAL_FIXED_EXPENSES,
   INITIAL_UTILITY_CONTRACTS,
   INITIAL_VARIABLE_EXPENSES,
@@ -32,6 +35,12 @@ interface FinanceContextType {
   formatAmount: (amount: number, forceShow?: boolean) => string;
   activeFamily: string;
   setActiveFamily: (family: string) => void;
+  familyProfiles: string[];
+  addFamilyProfile: (name: string) => void;
+  familyMembers: FamilyMember[];
+  addFamilyMember: (member: Omit<FamilyMember, 'id'>) => void;
+  removeFamilyMember: (id: string) => void;
+  updateFamilyMember: (id: string, updated: Partial<FamilyMember>) => void;
   monthlySummary: typeof INITIAL_MONTHLY_SUMMARY;
   fixedExpenses: FixedExpense[];
   toggleFixedPaid: (id: string) => void;
@@ -73,6 +82,8 @@ const FinanceContext = createContext<FinanceContextType | undefined>(undefined);
 export const FinanceProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [isIncognito, setIsIncognito] = useState(false);
   const [activeFamily, setActiveFamily] = useState('Familia García');
+  const [familyProfiles, setFamilyProfiles] = useState<string[]>(INITIAL_FAMILY_PROFILES);
+  const [familyMembers, setFamilyMembers] = useState<FamilyMember[]>(INITIAL_FAMILY_MEMBERS);
   const [fixedExpenses, setFixedExpenses] = useState<FixedExpense[]>(INITIAL_FIXED_EXPENSES);
   const [utilityContracts, setUtilityContracts] = useState<UtilityContract[]>(INITIAL_UTILITY_CONTRACTS);
   const [variableExpenses, setVariableExpenses] = useState<VariableExpense[]>(INITIAL_VARIABLE_EXPENSES);
@@ -98,6 +109,8 @@ export const FinanceProvider: React.FC<{ children: React.ReactNode }> = ({ child
         if (parsed.tips) setTips(parsed.tips);
         if (parsed.chatMessages) setChatMessages(parsed.chatMessages);
         if (parsed.activeFamily) setActiveFamily(parsed.activeFamily);
+        if (parsed.familyProfiles) setFamilyProfiles(parsed.familyProfiles);
+        if (parsed.familyMembers) setFamilyMembers(parsed.familyMembers);
       }
     } catch (e) {
       console.error('Failed to load local state:', e);
@@ -117,6 +130,8 @@ export const FinanceProvider: React.FC<{ children: React.ReactNode }> = ({ child
         tips,
         chatMessages,
         activeFamily,
+        familyProfiles,
+        familyMembers,
       };
       localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(stateToSave));
     } catch (e) {
@@ -132,10 +147,39 @@ export const FinanceProvider: React.FC<{ children: React.ReactNode }> = ({ child
     tips,
     chatMessages,
     activeFamily,
+    familyProfiles,
+    familyMembers,
   ]);
 
   const toggleIncognito = () => {
     setIsIncognito((prev) => !prev);
+  };
+
+  const addFamilyProfile = (name: string) => {
+    const trimmed = name.trim();
+    if (!trimmed) return;
+    if (!familyProfiles.includes(trimmed)) {
+      setFamilyProfiles((prev) => [...prev, trimmed]);
+    }
+    setActiveFamily(trimmed);
+  };
+
+  const addFamilyMember = (member: Omit<FamilyMember, 'id'>) => {
+    const newMember: FamilyMember = {
+      ...member,
+      id: 'mem_' + Date.now(),
+    };
+    setFamilyMembers((prev) => [...prev, newMember]);
+  };
+
+  const removeFamilyMember = (id: string) => {
+    setFamilyMembers((prev) => prev.filter((m) => m.id !== id));
+  };
+
+  const updateFamilyMember = (id: string, updated: Partial<FamilyMember>) => {
+    setFamilyMembers((prev) =>
+      prev.map((m) => (m.id === id ? { ...m, ...updated } : m))
+    );
   };
 
   const formatAmount = (amount: number, forceShow: boolean = false): string => {
@@ -157,7 +201,6 @@ export const FinanceProvider: React.FC<{ children: React.ReactNode }> = ({ child
   const totalSpentProrated = totalFixedProratedMonthly + totalUtilitiesAmount + totalVariableAmount;
   const availableCashProrated = INITIAL_MONTHLY_SUMMARY.totalIncome - totalSpentProrated - savingsTarget.mandatoryMonthly;
 
-  // Calculation for "Meses de Tranquilidad" (Emergency colchón ÷ Monthly expenses)
   const monthsOfPeace = totalSpentProrated > 0
     ? Math.round((savingsTarget.currentAmount / totalSpentProrated) * 10) / 10
     : 0;
@@ -260,6 +303,8 @@ export const FinanceProvider: React.FC<{ children: React.ReactNode }> = ({ child
       tips,
       chatMessages,
       activeFamily,
+      familyProfiles,
+      familyMembers,
       exportedAt: new Date().toISOString(),
     };
     return JSON.stringify(data, null, 2);
@@ -277,6 +322,8 @@ export const FinanceProvider: React.FC<{ children: React.ReactNode }> = ({ child
       if (parsed.tips) setTips(parsed.tips);
       if (parsed.chatMessages) setChatMessages(parsed.chatMessages);
       if (parsed.activeFamily) setActiveFamily(parsed.activeFamily);
+      if (parsed.familyProfiles) setFamilyProfiles(parsed.familyProfiles);
+      if (parsed.familyMembers) setFamilyMembers(parsed.familyMembers);
       return true;
     } catch (e) {
       console.error('Invalid JSON string:', e);
@@ -293,6 +340,8 @@ export const FinanceProvider: React.FC<{ children: React.ReactNode }> = ({ child
     setSavingsTarget(INITIAL_SAVINGS_TARGET);
     setTips(INITIAL_TIPS);
     setChatMessages(INITIAL_CHAT_MESSAGES);
+    setFamilyProfiles(INITIAL_FAMILY_PROFILES);
+    setFamilyMembers(INITIAL_FAMILY_MEMBERS);
     localStorage.removeItem(LOCAL_STORAGE_KEY);
   };
 
@@ -304,6 +353,12 @@ export const FinanceProvider: React.FC<{ children: React.ReactNode }> = ({ child
         formatAmount,
         activeFamily,
         setActiveFamily,
+        familyProfiles,
+        addFamilyProfile,
+        familyMembers,
+        addFamilyMember,
+        removeFamilyMember,
+        updateFamilyMember,
         monthlySummary: INITIAL_MONTHLY_SUMMARY,
         fixedExpenses,
         toggleFixedPaid,
