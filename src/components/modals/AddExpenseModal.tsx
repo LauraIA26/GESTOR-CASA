@@ -41,7 +41,7 @@ export const AddExpenseModal: React.FC<AddExpenseModalProps> = ({
     e.preventDefault();
 
     if (expenseType === 'fijo') {
-      if (!fixedName || !fixedAmount) return;
+      if (!fixedName.trim() || !Number.isFinite(Number(fixedAmount)) || Number(fixedAmount) <= 0) return;
       addFixedExpense({
         name: fixedName,
         amount: Number(fixedAmount),
@@ -52,7 +52,7 @@ export const AddExpenseModal: React.FC<AddExpenseModalProps> = ({
         provider: fixedProvider || undefined,
       });
     } else {
-      if (!varName || !varAmount) return;
+      if (!varName.trim() || !Number.isFinite(Number(varAmount)) || Number(varAmount) <= 0) return;
       addVariableExpense({
         name: varName,
         amount: Number(varAmount),
@@ -165,6 +165,7 @@ export const AddExpenseModal: React.FC<AddExpenseModalProps> = ({
                   </label>
                   <input
                     type="number"
+                    min="0.01"
                     required
                     placeholder="Ej. 300"
                     value={fixedAmount}
@@ -258,6 +259,7 @@ export const AddExpenseModal: React.FC<AddExpenseModalProps> = ({
                   </label>
                   <input
                     type="number"
+                    min="0.01"
                     required
                     placeholder="Ej. 45"
                     value={varAmount}

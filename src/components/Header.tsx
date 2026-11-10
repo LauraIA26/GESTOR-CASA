@@ -1,15 +1,14 @@
 import React from 'react';
 import { useFinance } from '../context/FinanceContext';
 import { PWAInstallButton } from './PWAInstallButton';
-import { Eye, EyeOff, Home, Users, Calendar, QrCode, Settings } from 'lucide-react';
+import { Eye, EyeOff, Home, Users, Calendar, QrCode } from 'lucide-react';
 
 interface HeaderProps {
   onOpenQRModal: () => void;
-  onOpenFamilySettings: () => void;
 }
 
-export const Header: React.FC<HeaderProps> = ({ onOpenQRModal, onOpenFamilySettings }) => {
-  const { isIncognito, toggleIncognito, activeFamily, setActiveFamily, familyProfiles, monthlySummary } = useFinance();
+export const Header: React.FC<HeaderProps> = ({ onOpenQRModal }) => {
+  const { isIncognito, toggleIncognito, activeFamily, setActiveFamily, familyMembers, setFamilyMembers, monthlySummary } = useFinance();
 
   return (
     <header className="sticky top-0 z-40 bg-slate-950/90 backdrop-blur-md border-b border-slate-800/80 py-3.5 px-4 sm:px-6">
@@ -26,7 +25,7 @@ export const Header: React.FC<HeaderProps> = ({ onOpenQRModal, onOpenFamilySetti
                   Gestor Casa Pro
                 </h1>
                 <span className="text-[10px] font-extrabold px-2 py-0.5 rounded-full bg-emerald-950 text-emerald-400 border border-emerald-800/60">
-                  {activeFamily}
+                  PWA Local
                 </span>
               </div>
               <p className="text-xs font-semibold text-slate-400 flex items-center gap-1 mt-0.5">
@@ -36,15 +35,8 @@ export const Header: React.FC<HeaderProps> = ({ onOpenQRModal, onOpenFamilySetti
             </div>
           </div>
 
-          {/* Mobile Right Controls: QR & Settings & Incognito */}
-          <div className="flex sm:hidden items-center gap-1.5">
-            <button
-              onClick={onOpenFamilySettings}
-              className="flex items-center justify-center min-h-[44px] min-w-[44px] rounded-2xl border border-slate-800 bg-slate-900 text-slate-300 hover:text-white active:scale-95 transition cursor-pointer"
-              title="Personalizar Familia y Miembros"
-            >
-              <Settings className="w-5 h-5 text-emerald-400" />
-            </button>
+          {/* Mobile Right Controls: QR & Incognito */}
+          <div className="flex sm:hidden items-center gap-2">
             <button
               onClick={onOpenQRModal}
               className="flex items-center justify-center min-h-[44px] min-w-[44px] rounded-2xl border border-slate-800 bg-slate-900 text-emerald-400 hover:bg-slate-800 active:scale-95 transition cursor-pointer"
@@ -68,29 +60,22 @@ export const Header: React.FC<HeaderProps> = ({ onOpenQRModal, onOpenFamilySetti
 
         {/* Desktop Controls */}
         <div className="flex items-center gap-2.5 flex-wrap justify-between sm:justify-end">
-          {/* Family Selector & Settings Button */}
-          <div className="flex items-center gap-1 bg-slate-900 border border-slate-800 rounded-2xl p-1 shadow-sm">
-            <div className="flex items-center gap-1 px-2.5 py-1">
-              <Users className="w-4 h-4 text-slate-400" />
-              <select
-                value={activeFamily}
-                onChange={(e) => setActiveFamily(e.target.value)}
-                className="bg-transparent text-xs font-bold text-slate-200 focus:outline-none cursor-pointer pr-1"
-              >
-                {familyProfiles.map((fam) => (
-                  <option key={fam} value={fam} className="bg-slate-900 text-white">
-                    {fam}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <button
-              onClick={onOpenFamilySettings}
-              className="p-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-emerald-400 transition cursor-pointer shrink-0"
-              title="Personalizar Integrantes de la Familia"
-            >
-              <Settings className="w-4 h-4" />
-            </button>
+          {/* Family Selector */}
+          <div className="flex items-center gap-1.5 bg-slate-900 border border-slate-800 rounded-2xl px-3 py-2 shadow-sm">
+            <Users className="w-4 h-4 text-slate-400" />
+            <input
+              value={activeFamily}
+              onChange={(e) => setActiveFamily(e.target.value)}
+              aria-label="Nombre de la casa o familia"
+              className="bg-transparent text-xs font-bold text-slate-200 focus:outline-none w-28"
+            />
+            <input
+              value={familyMembers.join(', ')}
+              onChange={(e) => setFamilyMembers(e.target.value.split(',').map((name) => name.trim()).filter(Boolean))}
+              aria-label="Miembros de la familia separados por comas"
+              placeholder="Miembros..."
+              className="bg-transparent text-[11px] text-slate-400 focus:outline-none w-36 border-l border-slate-700 pl-2"
+            />
           </div>
 
           {/* Desktop QR & Sync Button */}

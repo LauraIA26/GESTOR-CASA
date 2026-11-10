@@ -21,7 +21,6 @@ import {
 // Modals
 import { SectionDetailModal } from './components/modals/SectionDetailModal';
 import { QRModal } from './components/modals/QRModal';
-import { FamilySettingsModal } from './components/modals/FamilySettingsModal';
 import { AddExpenseModal } from './components/modals/AddExpenseModal';
 import { AddAppointmentModal } from './components/modals/AddAppointmentModal';
 import { ContractDetailModal } from './components/modals/ContractDetailModal';
@@ -36,7 +35,6 @@ function DashboardContent() {
 
   // Auxiliary modals
   const [isQRModalOpen, setIsQRModalOpen] = useState(false);
-  const [isFamilySettingsOpen, setIsFamilySettingsOpen] = useState(false);
   const [isExpenseModalOpen, setIsExpenseModalOpen] = useState(false);
   const [expenseModalDefaultType, setExpenseModalDefaultType] = useState<'fijo' | 'variable'>('fijo');
 
@@ -125,10 +123,7 @@ function DashboardContent() {
   return (
     <div className="min-h-screen bg-slate-950 text-white p-4 sm:p-6 pb-24">
       {/* Header */}
-      <Header
-        onOpenQRModal={() => setIsQRModalOpen(true)}
-        onOpenFamilySettings={() => setIsFamilySettingsOpen(true)}
-      />
+      <Header onOpenQRModal={() => setIsQRModalOpen(true)} />
 
       {/* Main Container */}
       <main className="max-w-4xl mx-auto pt-6 space-y-6">
@@ -136,7 +131,7 @@ function DashboardContent() {
         <div className="flex items-center justify-between">
           <div>
             <h2 className="text-xl sm:text-2xl font-black text-white tracking-tight">
-              MENÚ PRINCIPAL
+              Menú Principal Doméstico (Cajas Ciegas)
             </h2>
             <p className="text-xs text-slate-400 font-medium">
               Toca cualquier caja para desplegar sus datos y controles privados
@@ -221,10 +216,6 @@ function DashboardContent() {
 
       {/* Auxiliary Action Modals */}
       <QRModal isOpen={isQRModalOpen} onClose={() => setIsQRModalOpen(false)} />
-      <FamilySettingsModal
-        isOpen={isFamilySettingsOpen}
-        onClose={() => setIsFamilySettingsOpen(false)}
-      />
       <AddExpenseModal
         isOpen={isExpenseModalOpen}
         onClose={() => setIsExpenseModalOpen(false)}

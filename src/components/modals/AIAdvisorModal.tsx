@@ -15,7 +15,7 @@ interface AIAdviceItem {
 }
 
 export const AIAdvisorModal: React.FC<AIAdvisorModalProps> = ({ isOpen, onClose }) => {
-  const { totalFixedAmount, totalVariableAmount, utilityContracts, savingsTarget, formatAmount } = useFinance();
+  const { totalFixedProratedMonthly, totalVariableAmount, utilityContracts, savingsTarget, monthlySummary, formatAmount } = useFinance();
   const [promptInput, setPromptInput] = useState('');
   const [loading, setLoading] = useState(false);
   const [advisorResult, setAdvisorResult] = useState<{
@@ -39,8 +39,8 @@ export const AIAdvisorModal: React.FC<AIAdvisorModalProps> = ({ isOpen, onClose 
         body: JSON.stringify({
           userPrompt: textToSend,
           budgetSummary: {
-            income: 3450,
-            fixed: totalFixedAmount,
+            income: monthlySummary.totalIncome,
+            fixed: totalFixedProratedMonthly,
             utilities: totalUtilities,
             variable: totalVariableAmount,
             savings: savingsTarget.currentAmount,

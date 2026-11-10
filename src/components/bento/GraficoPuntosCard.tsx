@@ -6,7 +6,7 @@ import { motion } from 'motion/react';
 export const GraficoPuntosCard: React.FC = () => {
   const { trendData, formatAmount, isIncognito } = useFinance();
   const [viewMetric, setViewMetric] = useState<'gastos' | 'ingresos' | 'ahorro'>('gastos');
-  const [activePoint, setActivePoint] = useState<number | null>(5); // default last month
+  const [activePoint, setActivePoint] = useState<number | null>(null);
 
   // Chart dimensions & scaling
   const chartHeight = 160;
@@ -20,7 +20,7 @@ export const GraficoPuntosCard: React.FC = () => {
 
   // Map values to coordinates
   const points = trendData.map((d, index) => {
-    const x = paddingX + (index * (chartWidth - paddingX * 2)) / (trendData.length - 1);
+    const x = trendData.length <= 1 ? chartWidth / 2 : paddingX + (index * (chartWidth - paddingX * 2)) / (trendData.length - 1);
     const normalizedY = (d[viewMetric] - minValue) / (maxValue - minValue || 1);
     const y = chartHeight - paddingY - normalizedY * (chartHeight - paddingY * 2);
     return { x, y, month: d.month, val: d[viewMetric], fullData: d };
@@ -32,7 +32,7 @@ export const GraficoPuntosCard: React.FC = () => {
   }, '');
 
   // Fill area path string
-  const areaPath = `${linePath} L ${points[points.length - 1].x} ${chartHeight - 10} L ${points[0].x} ${chartHeight - 10} Z`;
+  const areaPath = points.length > 1 ? `${linePath} L ${points[points.length - 1].x} ${chartHeight - 10} L ${points[0].x} ${chartHeight - 10} Z` : '';
 
   const getMetricColor = () => {
     switch (viewMetric) {

@@ -17,7 +17,7 @@ export const AddAppointmentModal: React.FC<AddAppointmentModalProps> = ({
   const [activeTab, setActiveTab] = useState<'cita' | 'medicamento'>(initialTab);
 
   // Appointment Form state
-  const [patientName, setPatientName] = useState('Lucas (Hijo)');
+  const [patientName, setPatientName] = useState('');
   const [specialty, setSpecialty] = useState('');
   const [appointmentTag, setAppointmentTag] = useState<'pediatria' | 'dentista' | 'especialista'>('pediatria');
   const [doctorName, setDoctorName] = useState('');
@@ -39,7 +39,7 @@ export const AddAppointmentModal: React.FC<AddAppointmentModalProps> = ({
     e.preventDefault();
 
     if (activeTab === 'cita') {
-      if (!specialty || !location) return;
+      if (!patientName || !specialty || !location) return;
       const dayNumber = parseInt(date.split('-')[2]) || 15;
       addAppointment({
         patientName,
@@ -127,12 +127,8 @@ export const AddAppointmentModal: React.FC<AddAppointmentModalProps> = ({
                   onChange={(e) => setPatientName(e.target.value)}
                   className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl px-3.5 py-2.5 text-xs font-semibold text-slate-900 dark:text-white focus:outline-none focus:border-teal-500"
                 >
-                  {familyMembers.map((m) => (
-                    <option key={m.id} value={`${m.name} (${m.role})`}>
-                      {m.name} ({m.role})
-                    </option>
-                  ))}
-                  <option value="Toda la Familia">Toda la Familia</option>
+                  <option value="">Selecciona un miembro</option>
+                  {familyMembers.map((member) => <option key={member} value={member}>{member}</option>)}
                 </select>
               </div>
 

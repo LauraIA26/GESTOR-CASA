@@ -5,14 +5,13 @@ import { motion } from 'motion/react';
 
 export const ChatFamiliarCard: React.FC = () => {
   const { chatMessages, addChatMessage, familyMembers } = useFinance();
-
-  const [sender, setSender] = useState(familyMembers[0] ? `${familyMembers[0].name} (${familyMembers[0].role})` : 'Carlos (Papá)');
+  const [sender, setSender] = useState('');
   const [textInput, setTextInput] = useState('');
   const [category, setCategory] = useState<'Aviso' | 'Compra' | 'Arreglo' | 'Nota'>('Aviso');
 
   const handleSend = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!textInput.trim()) return;
+    if (!textInput.trim() || !sender) return;
     addChatMessage({
       sender,
       text: textInput,
@@ -72,11 +71,8 @@ export const ChatFamiliarCard: React.FC = () => {
               onChange={(e) => setSender(e.target.value)}
               className="bg-transparent text-xs font-bold text-slate-800 dark:text-slate-200 focus:outline-none cursor-pointer"
             >
-              {familyMembers.map((m) => (
-                <option key={m.id} value={`${m.name} (${m.role})`}>
-                  {m.name} ({m.role})
-                </option>
-              ))}
+              <option value="">Selecciona un miembro</option>
+              {familyMembers.map((member) => <option key={member} value={member}>{member}</option>)}
             </select>
           </div>
 

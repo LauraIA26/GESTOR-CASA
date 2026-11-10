@@ -33,25 +33,25 @@ app.post('/api/ai-advisor', async (req, res) => {
         source: 'rule-based',
         advice: [
           {
-            title: 'Revisión urgente de la factura de Luz (Endesa)',
-            action: 'Solicita la tarifa discriminación horaria de 3 periodos o tarifa PVPC regulada.',
-            estimatedSavingsYearly: 240,
+            title: 'Revisa tus contratos de suministros',
+            action: 'Compara periódicamente tus tarifas y elimina servicios que ya no utilices.',
+            estimatedSavingsYearly: 0,
             category: 'Suministros',
           },
           {
-            title: 'Optimización de compra semanal en Supermercado',
-            action: 'Planifica 5 menús con ingredientes compartidos (legumbres y verdura de temporada). Reduce compras sin lista.',
-            estimatedSavingsYearly: 480,
+            title: 'Planifica las compras',
+            action: 'Define un presupuesto y una lista antes de comprar para evitar gastos impulsivos.',
+            estimatedSavingsYearly: 0,
             category: 'Variables',
           },
           {
-            title: 'Consolidador de Seguros de Hogar y Vehículo',
-            action: 'Agrupa el seguro del SUV y del piso con la misma aseguradora para obtener hasta un 15% de bonificación familiar.',
-            estimatedSavingsYearly: 160,
+            title: 'Revisa tus gastos recurrentes',
+            action: 'Compara renovaciones y suscripciones antes de aceptar nuevos cargos.',
+            estimatedSavingsYearly: 0,
             category: 'Gastos Fijos',
           },
         ],
-        summaryText: 'Basado en tu presupuesto actual de 3.450€ de ingresos y 2.182€ de gastos, puedes liberar hasta 880€ adicionales al año sin sacrificar tu calidad de vida.',
+        summaryText: 'Añade tus ingresos y gastos para recibir recomendaciones ajustadas a tu situación.',
       });
     }
 
@@ -72,11 +72,11 @@ Devuelve SIEMPRE una respuesta en formato JSON estricto con la siguiente estruct
 
     const promptText = `
 Datos de la Familia:
-- Ingresos mensuales: ${budgetSummary?.income || 3450}€
-- Gastos fijos (hipoteca, seguros, IBI, subscripciones): ${budgetSummary?.fixed || 958}€
-- Suministros (Luz, Agua, Internet, Gas): ${budgetSummary?.utilities || 194}€
-- Gastos variables (Súper, Gasolina, Ocio): ${budgetSummary?.variable || 745}€
-- Ahorro actual en La Hucha: ${budgetSummary?.savings || 8450}€
+- Ingresos mensuales: ${budgetSummary?.income ?? 0}€
+- Gastos fijos mensuales prorrateados: ${budgetSummary?.fixed ?? 0}€
+- Suministros: ${budgetSummary?.utilities ?? 0}€
+- Gastos variables: ${budgetSummary?.variable ?? 0}€
+- Ahorro actual: ${budgetSummary?.savings ?? 0}€
 
 Consulta o meta del usuario: "${userPrompt || '¿Qué 3 acciones rápidas puedo hacer este mes para recortar gastos sin sufrir?'}"
 `;

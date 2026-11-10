@@ -20,7 +20,9 @@ export const SaludAhorroCard: React.FC<SaludAhorroCardProps> = ({ onOpenSavingsM
 
   const [addedNotice, setAddedNotice] = useState<string | null>(null);
 
-  const spentPercentage = Math.min(100, Math.round((totalSpent / monthlySummary.totalIncome) * 100));
+  const spentPercentage = monthlySummary.totalIncome > 0
+    ? Math.min(100, Math.round((totalSpent / monthlySummary.totalIncome) * 100))
+    : 0;
   const savingsProgress = Math.min(
     100,
     Math.round((savingsTarget.currentAmount / savingsTarget.targetAmount) * 100)
